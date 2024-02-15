@@ -5,6 +5,7 @@ import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -32,14 +33,19 @@ public class BookRepositoryImpl implements BookRepository {
             }
             throw new RuntimeException("Can't save book to db", e);
         } finally {
-
+            if (session != null) {
+                session.close();
+            }
         }
-        return null;
+        return book;
     }
 
     @Override
     public List<Book> findAll() {
-
-        return null;
+        try (Session session = sessionFactory.openSession()) {
+            Query<Book> getAllBooksQuery = session
+                    .createQuery("from Book", Book.class);
+            return getAllBooksQuery.getResultList();
+        }
     }
 }
