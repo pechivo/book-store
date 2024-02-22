@@ -28,14 +28,15 @@ public class AppConfig {
         return dataSource;
     }
 
-    @Bean
+    @Bean(name="entityManagerFactory")
     public LocalSessionFactoryBean getSessionFactory() {
         LocalSessionFactoryBean localSessionFactoryBean = new LocalSessionFactoryBean();
         localSessionFactoryBean.setDataSource(getDataSource());
 
         Properties properties = new Properties();
         properties.put("show_sql", environment.getProperty("spring.jpa.show-sql"));
-        properties.put("hibernate.hbm2ddl.auto", "spring.jpa.hibernate.ddl-auto");
+        properties.put("hibernate.hbm2ddl.auto", environment
+                .getProperty("spring.jpa.hibernate.ddl-auto"));
         localSessionFactoryBean.setHibernateProperties(properties);
 
         localSessionFactoryBean.setPackagesToScan("com.example.bookstore/model");
